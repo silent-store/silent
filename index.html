@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SILENT STORE | متجر سايلنت</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #00f0ff;
+      --accent: #ff0055;
+      --bg: #0a0b10;
+      --card-bg: #131722;
+      --card-border: #1e2638;
+      --text: #ffffff;
+      --text-muted: #8b9bb4;
+      --success: #00ff66;
+      --warning: #ffb703;
+      --binance: #f0b90b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem 6rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 550px;
+      text-align: center;
+    }
+
+    /* Fixed Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(19, 23, 34, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.6rem 0.5rem;
+      z-index: 1000;
+    }
+
+    .bottom-nav-btn {
+      flex: 1;
+      max-width: 130px;
+      padding: 0.4rem 0.2rem;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.25s ease;
+    }
+
+    .bottom-nav-btn i {
+      font-size: 1.25rem;
+    }
+
+    .bottom-nav-btn.active {
+      color: var(--primary);
+    }
+
+    .bottom-nav-btn.active i {
+      transform: translateY(-2px);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+    }
+
+    /* Content Views */
+    .view-content {
+      display: none;
+    }
+
+    .view-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Logo & Avatar */
+    .avatar-box {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 0.3rem;
+    }
+
+    h1 span {
+      color: var(--primary);
+      text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Giveaway Card */
+    .giveaway-card {
+      background: linear-gradient(135deg, rgba(255, 0, 85, 0.15), rgba(0, 240, 255, 0.15));
+      border: 1.5px dashed var(--accent);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .giveaway-badge {
+      align-self: flex-start;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 900;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .giveaway-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .giveaway-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .giveaway-btn {
+      align-self: flex-start;
+      margin-top: 0.3rem;
+      background: var(--primary);
+      color: #000;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 800;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Currency Bar */
+    .currency-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.6rem 0.9rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .currency-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .currency-select {
+      background: #0a0b10;
+      color: var(--primary);
+      border: 1px solid var(--card-border);
+      padding: 0.35rem 0.7rem;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Links List */
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 1rem;
+      padding: 0.95rem 1.2rem;
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.25s ease;
+    }
+
+    .link-btn i {
+      font-size: 1.4rem;
+      width: 32px;
+      text-align: center;
+    }
+
+    .link-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
+    }
+
+    .btn-wa i { color: #25d366; }
+    .btn-tiktok i { color: #fe2c55; }
+    .btn-insta i { color: #e1306c; }
+    .btn-group i { color: var(--primary); }
+    .btn-channel i { color: #128c7e; }
+
+    /* Categories in Prices */
+    .category-scroll {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .cat-btn {
+      flex: 0 0 auto;
+      padding: 0.5rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .cat-btn.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(0, 240, 255, 0.08);
+    }
+
+    .price-group {
+      display: none;
+    }
+
+    .price-group.active {
+      display: block;
+    }
+
+    .group-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-align: right;
+      margin: 1rem 0 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .prices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .price-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+    }
+
+    .item-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .item-price {
+      font-weight: 800;
+      color: var(--success);
+      font-size: 1rem;
+      min-width: 65px;
+      text-align: left;
+    }
+
+    .order-mini-btn {
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 0.35rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Pay Info Styles */
+    .order-summary-box {
+      background: rgba(0, 240, 255, 0.1);
+      border: 1.5px solid var(--primary);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1.2rem;
+      text-align: right;
+      display: none;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .order-summary-box i {
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-top: 0.2rem;
+    }
+
+    .order-summary-box p {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    .order-summary-box span {
+      color: var(--primary);
+    }
+
+    .important-notice {
+      background: rgba(255, 183, 3, 0.12);
+      border: 1.5px solid var(--warning);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1.2rem;
+      text-align: right;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .important-notice i {
+      color: var(--warning);
+      font-size: 1.4rem;
+      margin-top: 0.2rem;
+    }
+
+    .important-notice p {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.5;
+    }
+
+    .important-notice span {
+      color: var(--warning);
+    }
+
+    .pay-card-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      text-align: right;
+    }
+
+    .pay-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .pay-card-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .copy-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0a0b10;
+      border: 1px solid var(--card-border);
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary);
+      direction: ltr;
+    }
+
+    .copy-btn {
+      background: var(--primary);
+      color: #000;
+      border: none;
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      text-align: right;
+      margin-top: 1rem;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 0.9rem;
+      border-radius: 12px;
+    }
+
+    .step-badge {
+      background: var(--primary);
+      color: #000;
+      font-weight: 900;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .step-text h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .step-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .confirm-wa-btn {
+      width: 100%;
+      background: var(--success);
+      color: #000;
+      border: none;
+      padding: 1rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 1.2rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- VIEW 1: LINKS & SOCIAL -->
+    <div id="linksView" class="view-content active">
+      <div class="avatar-box">
+        <img src="logo.jpg" alt="SILENT STORE">
+      </div>
+      <h1>أهلاً بيك في متجر <span>SILENT</span></h1>
+      <p class="subtitle">المتجر الرسمي لشحن الألعاب والتطبيقات بأفضل الأسعار</p>
+
+      <div class="giveaway-card">
+        <div class="giveaway-badge"><i class="fa-solid fa-fire"></i> فعالية خاصة</div>
+        <div class="giveaway-title">🎁 سحب أسبوعي ورومات فري فاير حصرية!</div>
+        <div class="giveaway-desc">انضم لجروب العملاء للمشاركة في السحوبات والرومات الأسبوعية على جواهر مجانية.</div>
+        <a href="https://chat.whatsapp.com/حط_رابط_جروب_الواتس_هنا" target="_blank" class="giveaway-btn">
+          <i class="fa-solid fa-user-plus"></i> انضم للسحب الآن
+        </a>
+      </div>
+
+      <div class="links-list">
+        <a href="https://wa.me/201060032075" target="_blank" class="link-btn btn-wa">
+          <i class="fa-brands fa-whatsapp"></i><span>شات الواتساب المباشر</span>
+        </a>
+        <a href="https://whatsapp.com/channel/حط_رابط_القناة_هنا" target="_blank" class="link-btn btn-channel">
+          <i class="fa-solid fa-bullhorn"></i><span>قناة الواتساب الرسمية</span>
+        </a>
+        <a href="https://chat.whatsapp.com/حط_رابط_جروب_الواتس_هنا" target="_blank" class="link-btn btn-wa">
+          <i class="fa-solid fa-users"></i><span>جروب الواتساب للعملاء</span>
+        </a>
+        <a href="https://www.tiktok.com/@يوزرك_هنا" target="_blank" class="link-btn btn-tiktok">
+          <i class="fa-brands fa-tiktok"></i><span>حساب التيك توك</span>
+        </a>
+        <a href="https://www.instagram.com/يوزرك_هنا" target="_blank" class="link-btn btn-insta">
+          <i class="fa-brands fa-instagram"></i><span>حساب الإنستجرام</span>
+        </a>
+        <a href="https://facebook.com/groups/حط_رابط_الجروب_هنا" target="_blank" class="link-btn btn-group">
+          <i class="fa-solid fa-comments"></i><span>الجروب الرسمي</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- VIEW 2: PRICES -->
+    <div id="pricesView" class="view-content">
+      <h1>قائمة أسعار <span>SILENT</span></h1>
+      <p class="subtitle">اختر اللعبة أو التطبيق واضغط "اطلب الآن" للشحن الفوري</p>
+
+      <div class="currency-bar">
+        <span class="currency-label"><i class="fa-solid fa-coins"></i> عرض الأسعار بعملة:</span>
+        <select id="currencySelect" class="currency-select" onchange="convertAllPrices(this.value)">
+          <option value="EGP">🇪🇬 الجنيه المصري (ج)</option>
+          <option value="LYD">🇱🇾 الدينار الليبي (د.ل)</option>
+          <option value="SAR">🇸🇦 الريال السعودي (ر.س)</option>
+          <option value="JOD">🇯🇴 الدينار الأردني (د.أ)</option>
+        </select>
+      </div>
+
+      <div class="category-scroll">
+        <button class="cat-btn active" onclick="switchCategory('ffGroup', this)"><i class="fa-solid fa-fire"></i> فري فاير</button>
+        <button class="cat-btn" onclick="switchCategory('pubgGroup', this)"><i class="fa-solid fa-crosshairs"></i> ببجي</button>
+        <button class="cat-btn" onclick="switchCategory('efootballGroup', this)"><i class="fa-solid fa-futbol"></i> بيس eFootball</button>
+        <button class="cat-btn" onclick="switchCategory('robloxGroup', this)"><i class="fa-solid fa-cube"></i> روبلوكس</button>
+        <button class="cat-btn" onclick="switchCategory('tiktokGroup', this)"><i class="fa-brands fa-tiktok"></i> تيك توك</button>
+      </div>
+
+      <div id="ffGroup" class="price-group active">
+        <div class="group-title"><i class="fa-solid fa-gem"></i> باقات وعروض فري فاير</div>
+        <div class="prices-list" id="ffList"></div>
+      </div>
+      <div id="pubgGroup" class="price-group">
+        <div class="group-title"><i class="fa-solid fa-crosshairs"></i> باقات ببجي موبايل</div>
+        <div class="prices-list" id="pubgList"></div>
+      </div>
+      <div id="efootballGroup" class="price-group">
+        <div class="group-title"><i class="fa-solid fa-futbol"></i> باقات بيس eFootball</div>
+        <div class="prices-list" id="efootballList"></div>
+      </div>
+      <div id="robloxGroup" class="price-group">
+        <div class="group-title"><i class="fa-solid fa-cube"></i> باقات روبلوكس</div>
+        <div class="prices-list" id="robloxList"></div>
+      </div>
+      <div id="tiktokGroup" class="price-group">
+        <div class="group-title"><i class="fa-brands fa-tiktok"></i> باقات عملات تيك توك</div>
+        <div class="prices-list" id="tiktokList"></div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: PAYMENT -->
+    <div id="paymentView" class="view-content">
+      <h1>طرق الدفع <span>والشحن</span></h1>
+      <p class="subtitle">بيانات تحويل المبالغ وخطوات إتمام الطلب بكل سهولة</p>
+
+      <div id="selectedOrderBox" class="order-summary-box">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <p id="orderSummaryText"></p>
+      </div>
+
+      <div class="important-notice">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <p>تنبيه هام جداً: بعد التحويل، يجب إرسال <span>سكرين شوت التحويل الواضح</span> مع <span>الرقم أو الحساب المحول منه</span> على الواتساب للتنفيذ فوراً.</p>
+      </div>
+
+      <div class="pay-card-box">
+        <div class="pay-card-header">
+          <div class="pay-card-title"><i class="fa-solid fa-mobile-screen" style="color: #e60000;"></i> فودافون كاش (الأساسي)</div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">تحويل كاش</span>
+        </div>
+        <div class="copy-chip">
+          <span id="vfNumber">01034299214</span>
+          <button class="copy-btn" onclick="copyText(document.getElementById('vfNumber').innerText, this)"><i class="fa-solid fa-copy"></i> نسخ</button>
+        </div>
+      </div>
+
+      <div class="pay-card-box">
+        <div class="pay-card-header">
+          <div class="pay-card-title"><i class="fa-solid fa-wallet" style="color: #ff0055;"></i> محفظة كاش إضافية</div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">أورانج / اتصالات / وي</span>
+        </div>
+        <div class="copy-chip">
+          <span id="extraWalletNumber">01034299214</span>
+          <button class="copy-btn" onclick="copyText(document.getElementById('extraWalletNumber').innerText, this)"><i class="fa-solid fa-copy"></i> نسخ</button>
+        </div>
+      </div>
+
+      <div class="pay-card-box">
+        <div class="pay-card-header">
+          <div class="pay-card-title"><i class="fa-solid fa-bolt" style="color: #ffaa00;"></i> إنستاباي (InstaPay)</div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">تحويل فوري</span>
+        </div>
+        <div class="copy-chip">
+          <span id="instaAddress">01126664119</span>
+          <button class="copy-btn" onclick="copyText(document.getElementById('instaAddress').innerText, this)"><i class="fa-solid fa-copy"></i> نسخ</button>
+        </div>
+      </div>
+
+      <div class="pay-card-box">
+        <div class="pay-card-header">
+          <div class="pay-card-title"><i class="fa-solid fa-coins" style="color: var(--binance);"></i> باينانس (Binance Pay ID)</div>
+          <span style="font-size: 0.8rem; color: var(--binance); font-weight: 700;">USDT</span>
+        </div>
+        <div class="copy-chip">
+          <span id="binanceId">حط_Binance_ID_هنا</span>
+          <button class="copy-btn" onclick="copyText(document.getElementById('binanceId').innerText, this)"><i class="fa-solid fa-copy"></i> نسخ</button>
+        </div>
+      </div>
+
+      <div class="steps-container">
+        <div class="step-item"><div class="step-badge">1</div><div class="step-text"><h4>اختر باقتك من قسم الأسعار</h4><p>اضغط "اطلب الآن" على باقتك المطلوبة.</p></div></div>
+        <div class="step-item"><div class="step-badge">2</div><div class="step-text"><h4>حوّل المبلغ المطلوب</h4><p>انسخ الرقم أو الـ Pay ID المناسب لك وحوّل القيمة.</p></div></div>
+        <div class="step-item"><div class="step-badge">3</div><div class="step-text"><h4>ارسل إثبات التحويل والـ ID</h4><p>اضغط الزر بالأسفل لإرسال الإثبات وبيانات حسابك على الواتساب فوراً.</p></div></div>
+      </div>
+
+      <button class="confirm-wa-btn" onclick="sendToWhatsappAfterPay()">
+        <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> تأكيد الطلب وإرسال الإثبات على الواتساب
+      </button>
+    </div>
+
+    <!-- حقوق المتجر -->
+    <footer>
+      جميع الحقوق محفوظة &copy; 2026 - بواسطة KRESTO
+    </footer>
+
+  </div>
+
+  <!-- FIXED BOTTOM NAVIGATION BAR -->
+  <div class="bottom-nav">
+    <button class="bottom-nav-btn active" onclick="switchView('linksView', this)"><i class="fa-solid fa-house"></i><span>الرئيسية</span></button>
+    <button class="bottom-nav-btn" onclick="switchView('pricesView', this)"><i class="fa-solid fa-tags"></i><span>الأسعار</span></button>
+    <button class="bottom-nav-btn" onclick="switchView('paymentView', this)"><i class="fa-solid fa-wallet"></i><span>طرق الدفع</span></button>
+  </div>
+
+  <script>
+    const customerServiceWhatsapp = "201060032075";
+    let currentOrder = null;
+
+    const exchangeRates = {
+      EGP: { rate: 1, symbol: 'ج' },
+      LYD: { rate: 0.10, symbol: 'د.ل' },
+      SAR: { rate: 0.076, symbol: 'ر.س' },
+      JOD: { rate: 0.014, symbol: 'د.أ' }
+    };
+
+    const initialData = {
+      vfCash: "01034299214",
+      extraWallet: "01034299214",
+      insta: "01126664119",
+      binanceId: "123456789",
+      packages: {
+        ffGroup: [
+          { title: "💎 110 جوهرة", price: "60" },
+          { title: "💎 230 جوهرة", price: "120" },
+          { title: "💎 340 جوهرة", price: "175" },
+          { title: "💎 460 جوهرة", price: "230" },
+          { title: "💎 510 جوهرة", price: "265" },
+          { title: "💎 810 جوهرة", price: "410" },
+          { title: "💎 1040 جوهرة", price: "580" },
+          { title: "💎 1188 جوهرة", price: "600" },
+          { title: "💎 2000 جوهرة", price: "1000" },
+          { title: "💎 3000 جوهرة", price: "1450" },
+          { title: "💎 4070 جوهرة", price: "1900" },
+          { title: "💎 11200 جوهرة", price: "4800" },
+          { title: "عضوية أسبوعية", price: "135" },
+          { title: "عضوية شهرية", price: "590" },
+          { title: "عرض المستوى كامل 1270 💎", price: "220" }
+        ],
+        pubgGroup: [
+          { title: "☑️ 60 شدة", price: "55" },
+          { title: "☑️ 325 شدة", price: "245" },
+          { title: "☑️ 660 شدة", price: "470" },
+          { title: "☑️ 710 شدة", price: "500" },
+          { title: "☑️ 985 شدة", price: "720" },
+          { title: "☑️ 1800 شدة", price: "1350" }
+        ],
+        efootballGroup: [
+          { title: "⚽ 100 كوينز", price: "80" },
+          { title: "⚽ 300 كوينز", price: "160" },
+          { title: "⚽ 550 كوينز", price: "265" },
+          { title: "⚪ باقة سواريز", price: "60" }
+        ],
+        robloxGroup: [
+          { title: "🪙 80 Robux", price: "65" },
+          { title: "🪙 160 Robux", price: "120" },
+          { title: "🪙 400 Robux", price: "250" }
+        ],
+        tiktokGroup: [
+          { title: "🪙 70 عملة", price: "75" },
+          { title: "🪙 200 عملة", price: "140" },
+          { title: "🪙 350 عملة", price: "240" }
+        ]
+      }
+    };
+
+    function loadStoreData() {
+      const saved = localStorage.getItem('kresto_store_data');
+      return saved ? JSON.parse(saved) : initialData;
+    }
+
+    function renderStore() {
+      const data = loadStoreData();
+
+      if (data.vfCash) document.getElementById('vfNumber').innerText = data.vfCash;
+      if (data.extraWallet) document.getElementById('extraWalletNumber').innerText = data.extraWallet;
+      if (data.insta) document.getElementById('instaAddress').innerText = data.insta;
+      if (data.binanceId) document.getElementById('binanceId').innerText = data.binanceId;
+
+      const groupMap = {
+        ffGroup: 'ffList',
+        pubgGroup: 'pubgList',
+        efootballGroup: 'efootballList',
+        robloxGroup: 'robloxList',
+        tiktokGroup: 'tiktokList'
+      };
+
+      for (const [groupKey, containerId] of Object.entries(groupMap)) {
+        const container = document.getElementById(containerId);
+        if (container && data.packages[groupKey]) {
+          container.innerHTML = '';
+          data.packages[groupKey].forEach(pkg => {
+            const clean = parseFloat(pkg.price.toString().replace(/[^\d.]/g, '')) || 0;
+            const item = document.createElement('div');
+            item.className = 'price-item';
+            item.innerHTML = `
+              <span class="item-name">${pkg.title}</span>
+              <div class="item-actions">
+                <span class="item-price" data-egp="${clean}">${clean} ج</span>
+                <button class="order-mini-btn" onclick="orderItemFromCard(this, '${groupKey}', '${pkg.title}')">اطلب الآن</button>
+              </div>
+            `;
+            container.appendChild(item);
+          });
+        }
+      }
+    }
+
+    function switchView(viewId, btn) {
+      document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.bottom-nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+      if (btn) btn.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchCategory(groupId, btn) {
+      document.querySelectorAll('.price-group').forEach(g => g.classList.remove('active'));
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(groupId).classList.add('active');
+      if (btn) btn.classList.add('active');
+    }
+
+    function convertAllPrices(currencyKey) {
+      const { rate, symbol } = exchangeRates[currencyKey] || exchangeRates.EGP;
+      document.querySelectorAll('.item-price').forEach(el => {
+        const egp = parseFloat(el.getAttribute('data-egp') || el.innerText);
+        if (!isNaN(egp)) {
+          const converted = Math.round(egp * rate * 10) / 10;
+          el.innerText = `${converted} ${symbol}`;
+        }
+      });
+    }
+
+    function orderItemFromCard(btnEl, game, packageItem) {
+      const priceText = btnEl.parentElement.querySelector('.item-price').innerText;
+      orderItem(game, packageItem, priceText);
+    }
+
+    function orderItem(game, packageItem, price) {
+      currentOrder = { game, packageItem, price };
+      const payNavBtn = document.querySelectorAll('.bottom-nav-btn')[2];
+      switchView('paymentView', payNavBtn);
+
+      const summaryBox = document.getElementById('selectedOrderBox');
+      const summaryText = document.getElementById('orderSummaryText');
+      if (summaryBox && summaryText) {
+        summaryText.innerHTML = `طلبك المحدد: <span>${packageItem}</span><br>المبلغ المطلوب تحويله: <span>${price}</span>`;
+        summaryBox.style.display = 'flex';
+      }
+    }
+
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<i class="fa-solid fa-check"></i> تم النسخ`;
+        btn.style.background = 'var(--success)';
+        btn.style.color = '#000';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = 'var(--primary)';
+          btn.style.color = '#000';
+        }, 1500);
+      });
+    }
+
+    function sendToWhatsappAfterPay() {
+      let msg = `مرحباً متجر SILENT STORE 👋%0Aأريد تأكيد الشحن بعد التحويل:`;
+      if (currentOrder) {
+        msg += `%0A- الباقة: ${currentOrder.packageItem}%0A- المبلغ: ${currentOrder.price}`;
+      }
+      msg += `%0Aمرفق سكرين شوت التحويل والرقم المحول منه مع الـ ID.`;
+      window.open(`https://wa.me/${customerServiceWhatsapp}?text=${msg}`, '_blank');
+    }
+
+    window.addEventListener('DOMContentLoaded', renderStore);
+  </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SILENT STORE | لوحة التحكم</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00f0ff;
+      --accent: #ff0055;
+      --bg: #0a0b10;
+      --card-bg: #131722;
+      --card-border: #1e2638;
+      --text: #ffffff;
+      --text-muted: #8b9bb4;
+      --success: #00ff66;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
+    .container { width: 100%; max-width: 650px; }
+    .login-box, .panel-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 1.5rem; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); }
+    h1, h2 { font-size: 1.5rem; font-weight: 900; margin-bottom: 0.5rem; text-align: center; }
+    h1 span, h2 span { color: var(--primary); }
+    p.subtitle { color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 1.5rem; }
+    .input-group { margin-bottom: 1rem; text-align: right; }
+    .input-group label { display: block; font-size: 0.9rem; margin-bottom: 0.4rem; font-weight: 700; }
+    .input-group input, .input-group select { width: 100%; background: #0a0b10; border: 1px solid var(--card-border); border-radius: 10px; padding: 0.75rem 1rem; color: #fff; font-size: 0.95rem; outline: none; }
+    .input-group input:focus, .input-group select:focus { border-color: var(--primary); }
+    .btn-main { width: 100%; background: var(--primary); color: #000; border: none; padding: 0.85rem; font-size: 1rem; font-weight: 800; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: 0.2s; }
+    .btn-main:hover { box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); }
+    .section-title { font-size: 1.1rem; font-weight: 800; color: var(--primary); margin: 1.5rem 0 0.8rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.4rem; }
+    .table-container { overflow-x: auto; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; text-align: right; font-size: 0.85rem; }
+    th, td { padding: 0.65rem 0.5rem; border-bottom: 1px solid var(--card-border); }
+    th { color: var(--text-muted); }
+    .price-input { width: 85px; background: #0a0b10; border: 1px solid var(--card-border); color: var(--success); font-weight: 800; padding: 0.3rem 0.5rem; border-radius: 6px; text-align: center; }
+    .btn-delete { background: rgba(255, 0, 85, 0.15); border: 1px solid var(--accent); color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+    .alert-success { background: rgba(0, 255, 102, 0.15); border: 1px solid var(--success); color: var(--success); padding: 0.6rem; border-radius: 8px; font-size: 0.85rem; text-align: center; margin-bottom: 1rem; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginScreen" class="login-box">
+      <h1>لوحة إدارة <span>SILENT</span></h1>
+      <p class="subtitle">يرجى إدخال كلمة المرور للمتابعة</p>
+      <div class="input-group">
+        <label>كلمة المرور:</label>
+        <input type="password" id="adminPassword" placeholder="اكتب كلمة المرور...">
+      </div>
+      <button class="btn-main" onclick="checkLogin()">
+        <i class="fa-solid fa-lock-open"></i> تسجيل الدخول
+      </button>
+      <p id="loginError" style="color: var(--accent); font-size: 0.85rem; text-align: center; margin-top: 0.6rem; display: none;">كلمة المرور غير صحيحة!</p>
+    </div>
+
+    <!-- لوحة التحكم الفعلية -->
+    <div id="adminPanel" class="panel-box" style="display: none;">
+      <h2>لوحة تحكم <span>SILENT</span></h2>
+      <p class="subtitle">تعديل أرقام التحويل وحسابات الدفع وأسعار الباقات</p>
+      <div id="saveAlert" class="alert-success">✔ تم حفظ التغييرات بنجاح في المتجر!</div>
+
+      <div class="section-title"><i class="fa-solid fa-wallet"></i> تعديل وسائل الدفع والتحويل</div>
+      <div class="input-group">
+        <label>رقم فودافون كاش (الأساسي):</label>
+        <input type="text" id="vfCashInput">
+      </div>
+      <div class="input-group">
+        <label>رقم محفظة إضافية (أورانج / اتصالات / وي):</label>
+        <input type="text" id="extraWalletInput">
+      </div>
+      <div class="input-group">
+        <label>رقم إنستاباي (InstaPay):</label>
+        <input type="text" id="instaInput">
+      </div>
+      <div class="input-group">
+        <label>معرّف باينانس (Binance Pay ID / USDT):</label>
+        <input type="text" id="binanceInput">
+      </div>
+      <button class="btn-main" style="margin-bottom: 1.5rem;" onclick="savePaymentNumbers()">
+        <i class="fa-solid fa-floppy-disk"></i> حفظ وسائل الدفع
+      </button>
+
+      <div class="section-title"><i class="fa-solid fa-plus-circle"></i> إضافة باقة جديدة</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+        <div class="input-group">
+          <label>القسم / اللعبة:</label>
+          <select id="newGameSelect">
+            <option value="ffGroup">فري فاير</option>
+            <option value="pubgGroup">ببجي موبايل</option>
+            <option value="efootballGroup">بيس eFootball</option>
+            <option value="robloxGroup">روبلوكس</option>
+            <option value="tiktokGroup">تيك توك</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>اسم الباقة:</label>
+          <input type="text" id="newPkgTitle" placeholder="مثال: 500 جوهرة">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>السعر بالجنيه (مثال: 250):</label>
+        <input type="text" id="newPkgPrice" placeholder="مثال: 250">
+      </div>
+      <button class="btn-main" style="margin-bottom: 1.5rem; background: var(--success);" onclick="addNewPackage()">
+        <i class="fa-solid fa-plus"></i> إضافة الباقة للمتجر
+      </button>
+
+      <div class="section-title"><i class="fa-solid fa-tags"></i> تعديل الأسعار الحالية</div>
+      <div class="input-group">
+        <label>اختر اللعبة لعرض أسعارها:</label>
+        <select id="filterGameSelect" onchange="renderPriceTable()">
+          <option value="ffGroup">فري فاير</option>
+          <option value="pubgGroup">ببجي موبايل</option>
+          <option value="efootballGroup">بيس eFootball</option>
+          <option value="robloxGroup">روبلوكس</option>
+          <option value="tiktokGroup">تيك توك</option>
+        </select>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>الباقة</th>
+              <th>السعر الحالي (ج)</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="priceTableBody"></tbody>
+        </table>
+      </div>
+      <button class="btn-main" onclick="saveTablePrices()">
+        <i class="fa-solid fa-floppy-disk"></i> حفظ تعديلات الأسعار
+      </button>
+
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <a href="index.html" target="_blank" style="color: var(--primary); font-size: 0.9rem; text-decoration: none; font-weight: 700;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> فتح المتجر لمعاينة التعديلات
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_PASS = "393931";
+
+    const defaultData = {
+      vfCash: "01034299214",
+      extraWallet: "01034299214",
+      insta: "01126664119",
+      binanceId: "123456789",
+      packages: {
+        ffGroup: [
+          { title: "💎 110 جوهرة", price: "60" },
+          { title: "💎 230 جوهرة", price: "120" },
+          { title: "💎 340 جوهرة", price: "175" },
+          { title: "💎 460 جوهرة", price: "230" },
+          { title: "💎 510 جوهرة", price: "265" },
+          { title: "💎 810 جوهرة", price: "410" },
+          { title: "💎 1040 جوهرة", price: "580" },
+          { title: "💎 1188 جوهرة", price: "600" },
+          { title: "💎 2000 جوهرة", price: "1000" },
+          { title: "💎 3000 جوهرة", price: "1450" },
+          { title: "💎 4070 جوهرة", price: "1900" },
+          { title: "💎 11200 جوهرة", price: "4800" },
+          { title: "عضوية أسبوعية", price: "135" },
+          { title: "عضوية شهرية", price: "590" },
+          { title: "عرض المستوى كامل 1270 💎", price: "220" }
+        ],
+        pubgGroup: [
+          { title: "☑️ 60 شدة", price: "55" },
+          { title: "☑️ 325 شدة", price: "245" },
+          { title: "☑️ 660 شدة", price: "470" },
+          { title: "☑️ 710 شدة", price: "500" },
+          { title: "☑️ 985 شدة", price: "720" },
+          { title: "☑️ 1800 شدة", price: "1350" }
+        ],
+        efootballGroup: [
+          { title: "⚽ 100 كوينز", price: "80" },
+          { title: "⚽ 300 كوينز", price: "160" },
+          { title: "⚽ 550 كوينز", price: "265" },
+          { title: "⚪ باقة سواريز", price: "60" }
+        ],
+        robloxGroup: [
+          { title: "🪙 80 Robux", price: "65" },
+          { title: "🪙 160 Robux", price: "120" },
+          { title: "🪙 400 Robux", price: "250" }
+        ],
+        tiktokGroup: [
+          { title: "🪙 70 عملة", price: "75" },
+          { title: "🪙 200 عملة", price: "140" },
+          { title: "🪙 350 عملة", price: "240" }
+        ]
+      }
+    };
+
+    function getStoreData() {
+      const data = localStorage.getItem('kresto_store_data');
+      return data ? JSON.parse(data) : defaultData;
+    }
+
+    function saveStoreData(data) {
+      localStorage.setItem('kresto_store_data', JSON.stringify(data));
+      const alertBox = document.getElementById('saveAlert');
+      alertBox.style.display = 'block';
+      setTimeout(() => alertBox.style.display = 'none', 2500);
+    }
+
+    function checkLogin() {
+      const pass = document.getElementById('adminPassword').value;
+      if (pass === ADMIN_PASS) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        initAdminData();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+
+    function initAdminData() {
+      const data = getStoreData();
+      document.getElementById('vfCashInput').value = data.vfCash || "01034299214";
+      document.getElementById('extraWalletInput').value = data.extraWallet || "01034299214";
+      document.getElementById('instaInput').value = data.insta || "01126664119";
+      document.getElementById('binanceInput').value = data.binanceId || "";
+      renderPriceTable();
+    }
+
+    function savePaymentNumbers() {
+      const data = getStoreData();
+      data.vfCash = document.getElementById('vfCashInput').value.trim();
+      data.extraWallet = document.getElementById('extraWalletInput').value.trim();
+      data.insta = document.getElementById('instaInput').value.trim();
+      data.binanceId = document.getElementById('binanceInput').value.trim();
+      saveStoreData(data);
+    }
+
+    function renderPriceTable() {
+      const game = document.getElementById('filterGameSelect').value;
+      const data = getStoreData();
+      const tbody = document.getElementById('priceTableBody');
+      tbody.innerHTML = '';
+
+      const list = data.packages[game] || [];
+      list.forEach((pkg, index) => {
+        const cleanPrice = pkg.price.toString().replace(/[^\d.]/g, '');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${pkg.title}</td>
+          <td><input type="text" class="price-input" value="${cleanPrice}" data-index="${index}"></td>
+          <td><button class="btn-delete" onclick="deletePackage('${game}', ${index})"><i class="fa-solid fa-trash"></i></button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function saveTablePrices() {
+      const game = document.getElementById('filterGameSelect').value;
+      const data = getStoreData();
+      const inputs = document.querySelectorAll('.price-input');
+      inputs.forEach(input => {
+        const idx = input.getAttribute('data-index');
+        data.packages[game][idx].price = input.value.trim().replace(/[^\d.]/g, '');
+      });
+      saveStoreData(data);
+    }
+
+    function addNewPackage() {
+      const game = document.getElementById('newGameSelect').value;
+      const title = document.getElementById('newPkgTitle').value.trim();
+      const price = document.getElementById('newPkgPrice').value.trim().replace(/[^\d.]/g, '');
+
+      if (!title || !price) {
+        alert('يرجى كتابة اسم الباقة وسعرها بالأرقام!');
+        return;
+      }
+
+      const data = getStoreData();
+      if (!data.packages[game]) data.packages[game] = [];
+      data.packages[game].push({ title, price });
+      saveStoreData(data);
+
+      document.getElementById('newPkgTitle').value = '';
+      document.getElementById('newPkgPrice').value = '';
+      document.getElementById('filterGameSelect').value = game;
+      renderPriceTable();
+    }
+
+    function deletePackage(game, index) {
+      if (confirm('هل أنت متأكد من حذف هذه الباقة؟')) {
+        const data = getStoreData();
+        data.packages[game].splice(index, 1);
+        saveStoreData(data);
+        renderPriceTable();
+      }
+    }
+  </script>
+</body>
+</html>
